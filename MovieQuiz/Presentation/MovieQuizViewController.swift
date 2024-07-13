@@ -6,6 +6,8 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak private var indexLabel: UILabel!
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var questionLabel: UILabel!
+    @IBOutlet weak private var noButton: UIButton!
+    @IBOutlet weak private var yesButton: UIButton!
     
     // MARK: - Private Properties
     
@@ -74,12 +76,14 @@ final class MovieQuizViewController: UIViewController {
         let currentQuestion = questions[currentQuestionIndex]
         let answer = true
         showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
+        disableButtons()
     }
     
     @IBAction private func noButtonClicked(_ sender: Any) {
         let currentQuestion = questions[currentQuestionIndex]
         let answer = false
         showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
+        disableButtons()
     }
     
     // MARK: - Private Methods
@@ -127,6 +131,7 @@ final class MovieQuizViewController: UIViewController {
             let viewModel = convert(model: nextQuestion)
             show(quiz: viewModel)
             imageView.layer.borderWidth = 0
+            enableButtons()
         }
     }
     
@@ -144,10 +149,22 @@ final class MovieQuizViewController: UIViewController {
             let viewModel = self.convert(model: firstQuestion)
             self.show(quiz: viewModel)
             self.imageView.layer.borderWidth = 0
+            self.enableButtons()
         }
         // создаем кнопку
         alert.addAction(action)
         // показываем алерт на экран
         self.present(alert, animated: true, completion: nil)
     }
+    
+    private func disableButtons () {
+        noButton.isEnabled = false
+        yesButton.isEnabled = false
+    }
+    
+    private func enableButtons () {
+        noButton.isEnabled = true
+        yesButton.isEnabled = true
+    }
+    
 }
