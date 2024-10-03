@@ -29,6 +29,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // текущий вопрос пользователя, который он видит
     private var currentQuestion: QuizQuestion?
     
+    // создание экземпляра
+    private var statisticService: StatisticServiceProtocol = StatisticService()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -108,31 +110,32 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 self.showNextQuestionOrResults()
             }
         }
-        
-        // приватный метод, который содержит логику перехода в один из сценариев
-        private func showNextQuestionOrResults() {
-            if currentQuestionIndex == questionsAmount - 1 {
-                let text = correctAnswers == questionsAmount ?
-                "Поздравляем, вы ответили на 10 из 10!" :
-                "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
-                // здесь нужно создать экземпляр алерта
-                let alertModel = AlertModel (title: "Этот раунд окончен!",
-                                             message: text,
-                                             buttonText: "Сыграть еще раз",
-                                             completion: {
-                    [weak self] in
-                    self?.restartQuiz() }
-                // здесь вызов функции, которая перезапустит квиз
-                )
-                // сходить туда сказать, что мы показываем алерт
-                alertPresenter?.showAlert(model: alertModel)
-            } else {
-                currentQuestionIndex += 1
-                self.questionFactory?.requestNextQuestion() 
-                imageView.layer.borderWidth = 0
-                enableButtons()
-            }
+    
+    // приватный метод, который содержит логику перехода в один из сценариев
+    private func showNextQuestionOrResults() {
+        if currentQuestionIndex == questionsAmount - 1 {
+            statisticService.store(correct: correctAnswers, total: questionsAmount)
+            let formattedDate = statisticService.bestGame.date.dateTimeString
+            let text = "Ваш результат: \(correctAnswers)/\(statisticService.bestGame.total) \n Количество сыгранных кизов: \(statisticService.gamesCount) \n Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(formattedDate) \n Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
+            
+            // здесь нужно создать экземпляр алерта
+            let alertModel = AlertModel (title: "Этот раунд окончен!",
+                                         message: text,
+                                         buttonText: "Сыграть еще раз",
+                                         completion: {
+                [weak self] in
+                self?.restartQuiz() }
+            // здесь вызов функции, которая перезапустит квиз
+            )
+            // сходить туда сказать, что мы показываем алерт
+            alertPresenter?.showAlert(model: alertModel)
+        } else {
+            currentQuestionIndex += 1
+            self.questionFactory?.requestNextQuestion()
+            imageView.layer.borderWidth = 0
+            enableButtons()
         }
+    }
     
         // что делать, если квиз перезапущен
         private func restartQuiz() {

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AlertPresenter: AlertProtocol {
+final class AlertPresenter: AlertProtocol {
     // обращение к классу, который будет использовать алерт, когда понадобится
     weak var viewController: MovieQuizViewController?
     
