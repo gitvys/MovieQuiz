@@ -55,7 +55,7 @@ final class StatisticService: StatisticServiceProtocol {
     
     var totalAccuracy: Double {
         get {
-            guard gamesCount > 0 else {
+            guard gamesCount > 0 && bestGame.total > 0 else {
                 return 0.0
             }
             let totalAccuracy = (Double(correctAnswers) / Double(bestGame.total * gamesCount)) * 100

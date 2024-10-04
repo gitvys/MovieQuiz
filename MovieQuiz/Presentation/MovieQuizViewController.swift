@@ -30,21 +30,21 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var currentQuestion: QuizQuestion?
     
     // создание экземпляра
-    private var statisticService: StatisticServiceProtocol = StatisticService()
+    private let statisticService: StatisticServiceProtocol = StatisticService()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let questionFactory = QuestionFactory()
-            questionFactory.delegate = self
-            self.questionFactory = questionFactory
+        questionFactory.delegate = self
+        self.questionFactory = questionFactory
         
         questionFactory.requestNextQuestion()
         // Подтянул презентер, self потому что вызов "здесь"
         self.alertPresenter = AlertPresenter (viewController: self)
     }
-        
+    
     // MARK: - QuestionFactoryDelegate
     // текущий вопрос определяет фабрика и отправляет его контроллеру, который будет работать над отображением
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -58,58 +58,58 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
-        // MARK: - IBActions
-        
-        @IBAction private func yesButtonClicked(_ sender: Any) {
-            guard let currentQuestion = currentQuestion else {
-                return
-            }
-            let answer = true
-            showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
-            disableButtons()
+    // MARK: - IBActions
+    
+    @IBAction private func yesButtonClicked(_ sender: Any) {
+        guard let currentQuestion = currentQuestion else {
+            return
         }
-        
-        @IBAction private func noButtonClicked(_ sender: Any) {
-            guard let currentQuestion = currentQuestion else {
-                return
-            }
-            let answer = false
-            showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
-            disableButtons()
+        let answer = true
+        showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
+        disableButtons()
+    }
+    
+    @IBAction private func noButtonClicked(_ sender: Any) {
+        guard let currentQuestion = currentQuestion else {
+            return
         }
-        
-        // MARK: - Private Methods
-        
-        private func convert(model: QuizQuestion) -> QuizStepViewModel {
-            let questionStep = QuizStepViewModel(
-                image: UIImage(named: model.image) ?? UIImage(),
-                question: model.question,
-                questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-            return questionStep
+        let answer = false
+        showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
+        disableButtons()
+    }
+    
+    // MARK: - Private Methods
+    
+    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+        let questionStep = QuizStepViewModel(
+            image: UIImage(named: model.image) ?? UIImage(),
+            question: model.question,
+            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
+        return questionStep
+    }
+    
+    private func show(quiz step: QuizStepViewModel) {
+        imageView.image = step.image
+        indexLabel.text = step.questionNumber
+        questionLabel.text = step.question
+    }
+    
+    private func showAnswerResult(isCorrect: Bool) {
+        imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
+        imageView.layer.borderWidth = 8 // толщина рамки
+        imageView.layer.cornerRadius = 20 // радиус скругления углов рамки
+        if isCorrect == true {
+            imageView.layer.borderColor = UIColor.ypGreen.cgColor
+            correctAnswers += 1
         }
-        
-        private func show(quiz step: QuizStepViewModel) {
-            imageView.image = step.image
-            indexLabel.text = step.questionNumber
-            questionLabel.text = step.question
+        else {
+            imageView.layer.borderColor = UIColor.ypRed.cgColor
         }
-        
-        private func showAnswerResult(isCorrect: Bool) {
-            imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
-            imageView.layer.borderWidth = 8 // толщина рамки
-            imageView.layer.cornerRadius = 20 // радиус скругления углов рамки
-            if isCorrect == true {
-                imageView.layer.borderColor = UIColor.ypGreen.cgColor
-                correctAnswers += 1
-            }
-            else {
-                imageView.layer.borderColor = UIColor.ypRed.cgColor
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                guard let self = self else { return }
-                self.showNextQuestionOrResults()
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.showNextQuestionOrResults()
         }
+    }
     
     // приватный метод, который содержит логику перехода в один из сценариев
     private func showNextQuestionOrResults() {
@@ -124,8 +124,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                                          buttonText: "Сыграть еще раз",
                                          completion: {
                 [weak self] in
+                // здесь вызов функции, которая перезапустит квиз
                 self?.restartQuiz() }
-            // здесь вызов функции, которая перезапустит квиз
             )
             // сходить туда сказать, что мы показываем алерт
             alertPresenter?.showAlert(model: alertModel)
@@ -137,23 +137,23 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
-        // что делать, если квиз перезапущен
-        private func restartQuiz() {
-            currentQuestionIndex = 0
-            correctAnswers = 0
-            questionFactory?.requestNextQuestion()
-            imageView.layer.borderWidth = 0
-            enableButtons()
-        }
-        
-        private func disableButtons () {
-            noButton.isEnabled = false
-            yesButton.isEnabled = false
-        }
-        
-        private func enableButtons () {
-            noButton.isEnabled = true
-            yesButton.isEnabled = true
-        }
-        
+    // что делать, если квиз перезапущен
+    private func restartQuiz() {
+        currentQuestionIndex = 0
+        correctAnswers = 0
+        questionFactory?.requestNextQuestion()
+        imageView.layer.borderWidth = 0
+        enableButtons()
+    }
+    
+    private func disableButtons() {
+        noButton.isEnabled = false
+        yesButton.isEnabled = false
+    }
+    
+    private func enableButtons() {
+        noButton.isEnabled = true
+        yesButton.isEnabled = true
+    }
+    
 }
