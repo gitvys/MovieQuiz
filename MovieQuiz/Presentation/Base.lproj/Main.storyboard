@@ -94,17 +94,23 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="bxS-GB-jLw">
+                                <rect key="frame" x="177.66666666666666" y="396" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="bxS-GB-jLw" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="JCb-oY-3zi"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="BSi-RE-5lm" secondAttribute="bottom" id="LLD-2R-0ey"/>
                             <constraint firstItem="BSi-RE-5lm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="QxP-fx-led"/>
+                            <constraint firstItem="bxS-GB-jLw" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Ytn-mg-QtK"/>
                             <constraint firstItem="BSi-RE-5lm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="c2E-9w-SkS"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BSi-RE-5lm" secondAttribute="trailing" constant="20" id="nlX-EL-hD0"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="bxS-GB-jLw" id="9kp-uI-Ccg"/>
                         <outlet property="imageView" destination="KxQ-0k-tEu" id="e8m-iG-hR6"/>
                         <outlet property="indexLabel" destination="KKE-Fd-GtK" id="6aT-KT-xKR"/>
                         <outlet property="noButton" destination="qeS-hu-BKv" id="MtT-Ve-M92"/>
