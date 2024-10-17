@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     // MARK: - IBOutlet
     
     @IBOutlet weak private var indexLabel: UILabel!
@@ -52,28 +52,28 @@ final class MovieQuizViewController: UIViewController {
     }
     
     func highlightImageBorder(isCorrectAnswer: Bool) {
-            imageView.layer.masksToBounds = true
-            imageView.layer.borderWidth = 8
-            imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        }
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 8
+        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+    }
     
     func hideBorder() {
         imageView.layer.borderWidth = 0
     }
     
-     func showNetworkError(message: String) {
+    func showNetworkError(message: String) {
         hideLoadingIndicator()
         let alertModel = AlertModel (title: "Ошибка",
                                      message: message,
                                      buttonText: "Попробовать еще раз",
                                      completion: {
             [weak self] in
-            self?.presenter.refreshNumbers()
+            self?.presenter.questionFactory?.requestNextQuestion()
             self?.showLoadingIndicator()
         }
         )
         // показываем алерт
-         presenter.alertPresenter?.showAlert(model: alertModel)
+        presenter.alertPresenter?.showAlert(model: alertModel)
     }
     
     func disableButtons() {

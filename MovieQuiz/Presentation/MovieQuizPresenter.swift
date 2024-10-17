@@ -22,7 +22,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private var currentQuestion: QuizQuestion?
     
     // обращение к контроллеру
-    private weak var viewController: MovieQuizViewController?
+    private weak var viewController: MovieQuizViewControllerProtocol?
     
     // обращение к фабрике вопросов
     var questionFactory: QuestionFactoryProtocol?
@@ -33,13 +33,15 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     // создание экземпляра
     private let statisticService: StatisticServiceProtocol!
     
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewControllerProtocol) {
         self.viewController = viewController
         
         statisticService = StatisticService()
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         questionFactory?.loadData()
-        alertPresenter = AlertPresenter(viewController: viewController)
+        if let viewController = viewController as? MovieQuizViewController {
+            alertPresenter = AlertPresenter(viewController: viewController)
+        }
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -80,16 +82,16 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         let bestGame = statisticService.bestGame
         
         let totalPlaysCountLine = "Количество сыгранных квизов: \(statisticService.gamesCount)"
-                let currentGameResultLine = "Ваш результат: \(correctAnswers)\\\(questionsAmount)"
-                let bestGameInfoLine = "Рекорд: \(bestGame.correct)\\\(bestGame.total)"
-                + " (\(bestGame.date.dateTimeString))"
-                let averageAccuracyLine = "Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
-                
-                let resultMessage = [
-                    currentGameResultLine, totalPlaysCountLine, bestGameInfoLine, averageAccuracyLine
-                ].joined(separator: "\n")
-                
-                return resultMessage
+        let currentGameResultLine = "Ваш результат: \(correctAnswers)\\\(questionsAmount)"
+        let bestGameInfoLine = "Рекорд: \(bestGame.correct)\\\(bestGame.total)"
+        + " (\(bestGame.date.dateTimeString))"
+        let averageAccuracyLine = "Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
+        
+        let resultMessage = [
+            currentGameResultLine, totalPlaysCountLine, bestGameInfoLine, averageAccuracyLine
+        ].joined(separator: "\n")
+        
+        return resultMessage
     }
     
     func didAnswer(isYes: Bool) {
@@ -98,10 +100,10 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
         
         let isCorrect = (isYes == currentQuestion.correctAnswer)
-
-            if isCorrect {
-                correctAnswers += 1
-            }
+        
+        if isCorrect {
+            correctAnswers += 1
+        }
         
         proceedWithAnswer(isCorrect: isCorrect)
         viewController?.disableButtons()
