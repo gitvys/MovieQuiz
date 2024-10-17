@@ -119,7 +119,7 @@
                         <outlet property="indexLabel" destination="KKE-Fd-GtK" id="6aT-KT-xKR"/>
                         <outlet property="noButton" destination="qeS-hu-BKv" id="MtT-Ve-M92"/>
                         <outlet property="questionLabel" destination="MzU-YS-i3f" id="4K7-dz-Rsb"/>
-                        <outlet property="yesButton" destination="60c-T0-66l" id="Lgk-Gf-sID"/>
+                        <outlet property="yesButton" destination="60c-T0-66l" id="kv0-QP-s9P"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

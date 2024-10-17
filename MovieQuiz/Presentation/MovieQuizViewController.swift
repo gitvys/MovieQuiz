@@ -35,12 +35,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         imageView.layer.cornerRadius = 20
         
+        presenter.viewController = self
+        
         let questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-        //        questionFactory.delegate = self
         self.questionFactory = questionFactory
         
-        //        questionFactory.requestNextQuestion()
-        //        // Подтянул презентер, self потому что вызов "здесь"
         self.alertPresenter = AlertPresenter (viewController: self)
         
         showLoadingIndicator()
@@ -72,21 +71,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - IBActions
     
     @IBAction private func yesButtonClicked(_ sender: Any) {
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let answer = true
-        showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
-        disableButtons()
+        presenter.currentQuestion = currentQuestion
+        presenter.yesButtonClicked()
     }
     
     @IBAction private func noButtonClicked(_ sender: Any) {
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let answer = false
-        showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
-        disableButtons()
+        presenter.currentQuestion = currentQuestion
+        presenter.noButtonClicked()
     }
     
     // MARK: - Private Methods
@@ -97,7 +88,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         questionLabel.text = step.question
     }
     
-    private func showAnswerResult(isCorrect: Bool) {
+    func showAnswerResult(isCorrect: Bool) {
         imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
         imageView.layer.borderWidth = 8 // толщина рамки
         imageView.layer.cornerRadius = 20 // радиус скругления углов рамки
@@ -149,16 +140,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         enableButtons()
     }
     
-    private func disableButtons() {
-        noButton.isEnabled = false
-        yesButton.isEnabled = false
-    }
-    
-    private func enableButtons() {
-        noButton.isEnabled = true
-        yesButton.isEnabled = true
-    }
-    
     private func showLoadingIndicator() {
         activityIndicator.isHidden = false // индикатор загрузки не скрыт
         activityIndicator.startAnimating() // включаем анимацию
@@ -180,6 +161,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         )
         // показываем алерт
         alertPresenter?.showAlert(model: alertModel)
+    }
+    
+    func disableButtons() {
+        noButton.isEnabled = false
+        yesButton.isEnabled = false
+    }
+    
+    func enableButtons() {
+        noButton.isEnabled = true
+        yesButton.isEnabled = true
     }
     
 }
