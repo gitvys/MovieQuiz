@@ -29,6 +29,7 @@ final class AlertPresenter: AlertProtocol {
         }
         // создаем кнопку
         alert.addAction(action)
+        alert.view.accessibilityIdentifier = "GameResults"
         // отдаем алерт на экран через основной контроллер
         viewController?.present(alert, animated: true, completion: nil)
     }
