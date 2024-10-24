@@ -76,7 +76,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Public Methods
-    func makeResultsMessage() -> String {
+    private func makeResultsMessage() -> String {
         statisticService.store(correct: correctAnswers, total: questionsAmount)
         
         let bestGame = statisticService.bestGame
@@ -94,7 +94,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         return resultMessage
     }
     
-    func didAnswer(isYes: Bool) {
+    private func didAnswer(isYes: Bool) {
         guard let currentQuestion = currentQuestion else {
             return
         }
@@ -117,7 +117,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         return questionStep
     }
     
-    func proceedWithAnswer(isCorrect: Bool) {
+    private func proceedWithAnswer(isCorrect: Bool) {
         viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
@@ -126,7 +126,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    func proceedToNextQuestionOrResults() {
+    private func proceedToNextQuestionOrResults() {
         if isLastQuestion() {
             let message = makeResultsMessage()
             
@@ -148,20 +148,20 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    func isLastQuestion() -> Bool {
+    private func isLastQuestion() -> Bool {
         currentQuestionIndex == questionsAmount - 1
     }
     
-    func refreshNumbers() {
+    private func refreshNumbers() {
         currentQuestionIndex = 0
         correctAnswers = 0
     }
     
-    func switchToNextQuestion() {
+    private func switchToNextQuestion() {
         currentQuestionIndex += 1
     }
     
-    func restartQuiz() {
+    private func restartQuiz() {
         refreshNumbers()
         questionFactory?.requestNextQuestion()
         viewController?.hideBorder()

@@ -75,7 +75,7 @@ class MoviesLoaderTests: XCTestCase {
                 XCTAssertEqual(movies.items.count, 2)
                 expectation.fulfill()
             case .failure(_):
-                XCTFail("Unexpected failure")
+                XCTFail("Loading error")
             }
         }
         waitForExpectations(timeout: 1)
@@ -95,7 +95,7 @@ class MoviesLoaderTests: XCTestCase {
                 XCTAssertNotNil(error)
                 expectation.fulfill()
             case .success(_):
-                XCTFail("Unexpected failure")
+                XCTFail("Loading error")
             }
         }
         waitForExpectations(timeout: 1)
